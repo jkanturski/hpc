@@ -1,0 +1,13 @@
+#!/bin/bash
+#BSUB -J mpi_hello
+#BSUB -q short
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -W 00:05
+#BSUB -o mpi_%J.out
+#BSUB -e mpi_%J.err
+
+source ~/miniforge3/etc/profile.d/conda.sh
+conda activate api_llm
+
+mpirun python hello_mpi.py
