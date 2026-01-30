@@ -1,49 +1,22 @@
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import time
+#!/bin/bash
+#BSUB -J pytorch_cpu_train
+#BSUB -q short
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -R "rusage[mem=8GB]"
+#BSUB -o pytorch_%J.out
+#BSUB -e pytorch_%J.err
 
-torch.manual_seed(42)
+# --- environment setup ---
+source ~/miniforge3/etc/profile.d/conda.sh
+conda activate api_llm
 
-# --- synthetic dataset ---
-N = 20000
-X = torch.randn(N, 20)
-y = (X.sum(dim=1) > 0).long()
+# --- PyTorch CPU threading ---
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+export NUMEXPR_NUM_THREADS=4
+export TORCH_NUM_THREADS=4
 
-# --- model ---
-model = nn.Sequential(
-    nn.Linear(20, 64),
-    nn.ReLU(),
-    nn.Linear(64, 2)
-)
-
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
-
-# --- training params ---
-epochs = 10
-batch_size = 64
-
-start = time.time()
-
-for epoch in range(epochs):
-    perm = torch.randperm(N)
-    total_loss = 0.0
-
-    for i in range(0, N, batch_size):
-        idx = perm[i:i+batch_size]
-        xb = X[idx]
-        yb = y[idx]
-
-        optimizer.zero_grad()
-        out = model(xb)
-        loss = criterion(out, yb)
-        loss.backward()
-        optimizer.step()
-
-        total_loss += loss.item()
-
-    print(f"Epoch {epoch}: loss={total_loss:.4f}")
-
-end = time.time()
-print(f"Training time: {end - start:.2f} seconds")
+# --- run training ---
+python t3.py
