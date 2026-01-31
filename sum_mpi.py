@@ -1,4 +1,8 @@
+import socket
 from mpi4py import MPI
+
+host = socket.gethostname()
+print(f"Host: {host}")
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
