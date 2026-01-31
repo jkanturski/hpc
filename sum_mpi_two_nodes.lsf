@@ -1,0 +1,13 @@
+#!/bin/bash
+#BSUB -J sum_mpi
+#BSUB -q short
+#BSUB -n 4
+#BSUB -R "span[ptile=2]"
+#BSUB -W 00:05
+#BSUB -o mpi_%J.out
+#BSUB -e mpi_%J.err
+
+source ~/miniforge3/etc/profile.d/conda.sh
+conda activate api_llm
+
+mpirun python sum_mpi.py
