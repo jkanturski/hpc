@@ -1,7 +1,9 @@
+import socker
 from mpi4py import MPI
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
+host = socket.gethostname()
 
 if rank == 0:
     # Only the leader (Rank 0) creates the data
@@ -13,4 +15,4 @@ else:
 # The magic line: Rank 0 broadcasts 'data' to everyone else
 data = comm.bcast(data, root=0)
 
-print(f"Rank {rank} received data: {data}")
+print(f"Rank {rank} received data: {data} on: {host}")
