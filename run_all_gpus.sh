@@ -11,4 +11,4 @@ module load conda/opence/1.5.0
 conda activate api_llm
 
 # Spectrum MPI usually handles the GPU binding automatically on POWER9
-mpirun python your_script.py
+mpirun python all_gpus.py
