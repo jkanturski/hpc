@@ -1,0 +1,9 @@
+#BSUB -J mpi_3nodes
+#BSUB -q short
+#BSUB -n 6                  # Total processes
+#BSUB -R "span[ptile=2]"    # Max 2 processes per node
+#BSUB -W 00:05
+#BSUB -o mpi_%J.out
+#BSUB -e mpi_%J.err
+
+mpirun python comm_bcast.py
